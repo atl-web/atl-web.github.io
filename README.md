@@ -1,3 +1,3 @@
 # Buenas...
 
-Usted probablemente no quiere ver esto, entre [acá](https://taekwondo-atl.com.ar). 
+Usted probablemente no quiere ver esto, entre [acá](https://tkd-huracan.com.ar). 
