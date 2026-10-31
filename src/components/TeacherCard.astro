@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  name: string;
+  rank: string;
+  photo: string;
+  w: number;
+  h: number;
+  isHead?: boolean;
+}
+
+const { name, rank, photo, w, h, isHead = false } = Astro.props;
+---
+
+<article class="teacher-card">
+  <img class="teacher-photo" src={photo} alt={`Foto de ${name}`} width={w} height={h} loading="lazy" />
+  <div class="teacher-body">
+    <h3 class="teacher-name">{name}</h3>
+    <p class="teacher-rank">
+      <Icon name="medal" size={18} />
+      {rank}
+      {isHead && <span class="pill pill--head">Docente principal</span>}
+    </p>
+  </div>
+</article>

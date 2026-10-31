@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro';
+
+interface Item {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  w: number;
+  h: number;
+  href: string;
+  external: boolean;
+}
+
+interface Props {
+  groups: { section: string; items: Item[] }[];
+  labelTag?: 'p' | 'h2' | 'h3';
+  titleTag?: 'h3' | 'h4';
+}
+
+const { groups, labelTag = 'p', titleTag = 'h4' } = Astro.props;
+const Label = labelTag;
+const Title = titleTag;
+---
+
+{
+  groups.map((group) => (
+    <div class="material-group">
+      <Label class="eyebrow material-label">{group.section}</Label>
+      <div class="grid">
+        {group.items.map((item, index) => (
+          <a
+            class="material-card"
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener noreferrer' : 'noopener'}
+            download={item.external ? undefined : true}
+          >
+            <img
+              src={item.image}
+              alt=""
+              width={item.w}
+              height={item.h}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
+              decoding="async" />
+            <div class="material-body">
+              <Title class="material-title">{item.title}</Title>
+              <p class="material-desc">{item.description}</p>
+              <p class="material-cta">
+                <Icon name={item.external ? 'target' : 'file-text'} size={18} />
+                {item.external ? 'Ver en YouTube' : 'Descargar PDF'}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  ))
+}

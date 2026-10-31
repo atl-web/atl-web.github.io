@@ -1,0 +1,131 @@
+---
+import Icon from './Icon.astro';
+import { countdownLabel } from '../lib/calendar';
+import type { EventCard } from '../lib/calendar';
+
+interface Props {
+  past: EventCard[];
+  next: EventCard | null;
+  future: EventCard[];
+}
+
+const { past, next, future } = Astro.props;
+const pastAscending = [...past].reverse();
+const cards = [
+  ...pastAscending.map((event) => ({ event, state: 'past' as const })),
+  ...(next ? [{ event: next, state: 'next' as const }] : []),
+  ...future.map((event) => ({ event, state: 'future' as const })),
+];
+const hasEvents = cards.length > 0;
+---
+
+{
+  hasEvents ? (
+    <div class="carousel">
+      <ul class="carousel-track" id="event-track" role="list" tabindex="0" aria-label="Eventos anteriores y próximos">
+        {cards.map(({ event, state }) => (
+          <li class={`event-card ${state === 'next' ? 'is-next' : 'is-faded'}`}>
+            {state === 'next' && (
+              <div class="event-card-top">
+                <p class="eyebrow">Próximo evento</p>
+                <p class="countdown">
+                  <Icon name="clock" size={18} />
+                  {countdownLabel(event)}
+                </p>
+              </div>
+            )}
+            {state === 'past' && <p class="eyebrow">Pasado</p>}
+            {event.totalDays > 1 && (
+              <p class="day-chip">
+                <Icon name="calendar" size={18} />
+                Día {event.dayIndex} de {event.totalDays}
+              </p>
+            )}
+            <time class="date" datetime={event.isoDate}>{event.dateLong}</time>
+            <h3>{event.title}</h3>
+            <p class="meta">
+              <Icon name="clock" size={18} />
+              {event.timeRange}
+            </p>
+            {event.location && (
+              <p class="meta">
+                <Icon name="map-pin" size={18} />
+                {event.location}
+              </p>
+            )}
+            {event.description && (
+              <p class="event-desc">
+                <Icon name="file-text" size={18} />
+                <span>{event.description}</span>
+              </p>
+            )}
+            {event.link && (
+              <p>
+                <a class="btn btn--ghost" href={event.link} rel="noopener noreferrer" target="_blank">
+                  <Icon name="calendar" size={18} />
+                  Ver en Google Calendar
+                </a>
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+      <div class="carousel-nav">
+        <button class="carousel-btn" type="button" id="carousel-prev" aria-label="Ver eventos anteriores" aria-controls="event-track">
+          <Icon name="caret-left" size={18} />
+          Anteriores
+        </button>
+        <button class="carousel-btn" type="button" id="carousel-next" aria-label="Ver eventos siguientes" aria-controls="event-track">
+          Siguientes
+          <Icon name="caret-right" size={18} />
+        </button>
+      </div>
+    </div>
+  ) : (
+    <div class="card">
+      <p class="eyebrow">Calendario</p>
+      <h3>Sin eventos cargados</h3>
+      <p class="meta">
+        Todavía no pudimos leer el calendario. Podés verlo directamente en Google Calendar.
+      </p>
+    </div>
+  )
+}
+
+<script>
+  const track = document.getElementById('event-track');
+  const prevButton = document.getElementById('carousel-prev');
+  const nextButton = document.getElementById('carousel-next');
+
+  if (track instanceof HTMLElement && prevButton instanceof HTMLButtonElement && nextButton instanceof HTMLButtonElement) {
+    const cards = Array.from(track.querySelectorAll('.event-card')) as HTMLElement[];
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const center = (card: HTMLElement) => {
+      track.scrollTo({
+        left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
+        behavior: reduced ? 'auto' : 'smooth',
+      });
+    };
+
+    const currentIndex = () => {
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      let best = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
+      cards.forEach((card, index) => {
+        const distance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - mid);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = index;
+        }
+      });
+      return best;
+    };
+
+    const initial = cards.find((card) => card.classList.contains('is-next'));
+    if (initial) center(initial);
+
+    prevButton.addEventListener('click', () => center(cards[Math.max(0, currentIndex() - 1)]));
+    nextButton.addEventListener('click', () => center(cards[Math.min(cards.length - 1, currentIndex() + 1)]));
+  }
+</script>

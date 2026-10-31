@@ -1,0 +1,192 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EventCarousel from '../components/EventCarousel.astro';
+import CalendarEmbed from '../components/CalendarEmbed.astro';
+import TeacherCard from '../components/TeacherCard.astro';
+import CourseCard from '../components/CourseCard.astro';
+import MaterialGrid from '../components/MaterialGrid.astro';
+import Icon from '../components/Icon.astro';
+import { getEvents } from '../lib/calendar';
+import { todayDayKey } from '../lib/format';
+import { getCollection } from 'astro:content';
+
+const events = await getEvents();
+const teachers = await getCollection('teachers');
+const courses = await getCollection('courses');
+const materials = await getCollection('materials');
+const todayKey = todayDayKey();
+
+function groupsFor(group: string, limit?: number) {
+  const items = materials
+    .filter((entry) => entry.data.group === group)
+    .slice(0, limit)
+    .map((entry) => entry.data);
+  const sections = [...new Set(items.map((item) => item.section))];
+  return sections.map((section) => ({
+    section,
+    items: items.filter((item) => item.section === section),
+  }));
+}
+---
+
+<Layout
+  title="Taekwondo Huracán · Escuela de Taekwondo en Club Atlético Huracán"
+  description="Escuela de Taekwondo en el Club Atlético Huracán (Av. Caseros 3159, CABA). Eventos, horarios de clase, programas de examen, formas y traducciones."
+  stamp={events.stamp}>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Club Atlético Huracán · Sede Social y Deportiva</p>
+        <h1>Taekwondo Huracán</h1>
+        <p class="lede">
+          Escuela de Taekwondo (WT) en Av. Caseros 3159, CABA. Clases para infantiles, juveniles y
+          mayores.
+        </p>
+        <div class="hero-facts">
+          <p class="meta">
+            <Icon name="map-pin" size={20} />
+            <span>Club Atlético Huracán — Av. Caseros 3159, C1263 AAA, CABA</span>
+          </p>
+          <p class="meta">
+            <Icon name="users" size={20} />
+            <span>Equipo: Alvarez Luis (7º DAN), Rodríguez Colmeiro Ramiro (4º DAN), Espinoza Madeleine (2º DAN), Jara Delfina (1º DAN)</span>
+          </p>
+        </div>
+        <p class="cta-row">
+          <a class="btn btn--primary" href="#eventos">
+            <Icon name="calendar" size={18} />
+            Ver próximo evento
+          </a>
+          <a class="btn btn--ghost" href="#horarios">
+            <Icon name="clock" size={18} />
+            Horarios de práctica
+          </a>
+        </p>
+      </div>
+      <img
+        class="hero-crest"
+        src="/assets/web/logos/CAH-154.webp"
+        alt="Escudo del Club Atlético Huracán"
+        width="154"
+        height="154" />
+    </div>
+  </section>
+
+  <section class="section" id="eventos" aria-labelledby="eventos-title">
+    <div class="wrap">
+      <p class="eyebrow">Agenda</p>
+      <h2 class="section-title" id="eventos-title">Eventos</h2>
+      <p class="lede">
+        Deslizá hacia la izquierda para ver los pasados y hacia la derecha para ver los futuros.
+      </p>
+      <EventCarousel past={events.past} next={events.next} future={events.future} />
+      <div id="calendario" class="embed-anchor">
+        <h3>Calendario completo</h3>
+        <p class="meta last-update">
+          <Icon name="clock" size={18} />
+          <span>Última actualización: {events.stamp}</span>
+        </p>
+        <CalendarEmbed />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="escuela" aria-labelledby="escuela-title">
+    <div class="wrap">
+      <p class="eyebrow">La escuela</p>
+      <h2 class="section-title" id="escuela-title">Taekwondo Huracán</h2>
+      <div class="school-grid">
+        <div>
+          <p class="meta">
+            <Icon name="map-pin" size={20} />
+            <a href="https://goo.gl/maps/ta28JYs56kSNZAmq6" rel="noopener noreferrer" target="_blank">
+              Club Atlético Huracán (Av. Caseros 3159, CABA)
+            </a>
+          </p>
+          <p class="meta">
+            <Icon name="users" size={20} />
+            <span>Entrenamos en la Sede Social y Deportiva del club Huracán (Plata Baja).</span>
+          </p>
+        </div>
+      </div>
+      <h3 class="sub-title">Profesoras y profesores</h3>
+      <div class="grid">
+        {teachers.map((teacher) => (
+          <TeacherCard
+            name={teacher.data.name}
+            rank={teacher.data.rank}
+            photo={teacher.data.photo}
+            w={teacher.data.w}
+            h={teacher.data.h}
+            isHead={teacher.data.isHead}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="horarios" aria-labelledby="horarios-title">
+    <div class="wrap">
+      <p class="eyebrow">Horarios</p>
+      <h2 class="section-title" id="horarios-title">Cronograma de clases</h2>
+      <p class="lede">
+        Días y horarios de práctica.
+      </p>
+      <div class="grid">
+        {courses.map((course) => (
+          <CourseCard
+            name={course.data.name}
+            days={course.data.days}
+            start={course.data.start}
+            end={course.data.end}
+            teachers={course.data.teachers}
+            todayKey={todayKey}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="material" aria-labelledby="material-title">
+    <div class="wrap">
+      <p class="eyebrow">Material</p>
+      <h2 class="section-title" id="material-title">Exámenes, formas y traducciones</h2>
+      <p class="lede">
+        Programas de examen y apuntes, formas (poomsae) y traducciones.
+      </p>
+
+      <div class="material-block">
+        <h3 class="sub-title">Exámenes: programas y apuntes</h3>
+        <MaterialGrid groups={groupsFor('examenes', 3)} />
+        <p>
+          <a class="btn btn--primary" href="/apuntes">
+            <Icon name="file-text" size={18} />
+            Ver todos los programas y apuntes
+          </a>
+        </p>
+      </div>
+
+      <div class="material-block">
+        <h3 class="sub-title">Formas</h3>
+        <MaterialGrid groups={groupsFor('formas', 3)} />
+        <p>
+          <a class="btn btn--primary" href="/formas">
+            <Icon name="target" size={18} />
+            Ver todas las formas
+          </a>
+        </p>
+      </div>
+
+      <div class="material-block">
+        <h3 class="sub-title">Traducciones</h3>
+        <MaterialGrid groups={groupsFor('traducciones', 3)} />
+        <p>
+          <a class="btn btn--primary" href="/traducciones">
+            <Icon name="book-open" size={18} />
+            Ver todas las traducciones
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

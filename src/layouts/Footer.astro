@@ -1,0 +1,40 @@
+---
+import Icon from '../components/Icon.astro';
+
+interface Props {
+  stamp?: string;
+}
+
+const { stamp } = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <section>
+      <h3>Seguinos</h3>
+      <p class="meta">
+        <Icon name="instagram-logo" size={20} />
+        <a href="https://www.instagram.com/tkdhuracan/" rel="me noopener noreferrer" target="_blank">
+          Instagram: @tkdhuracan
+        </a>
+      </p>
+    </section>
+    <section>
+      <h3>Dónde entrenamos</h3>
+      <p class="meta">
+        <Icon name="map-pin" size={20} />
+        <a href="https://goo.gl/maps/ta28JYs56kSNZAmq6" rel="noopener noreferrer" target="_blank">
+          Club Atlético Huracán<br />Av. Caseros 3159, CABA
+        </a>
+      </p>
+    </section>
+    <section>
+      <h3>Contacto</h3>
+      <p class="meta">
+        <Icon name="users" size={20} />
+        Entrenamientos en la Sede Social y Deportiva del Club Huracán.
+      </p>
+      {stamp && <p class="stamp">Calendario: datos al {stamp}</p>}
+    </section>
+  </div>
+</footer>

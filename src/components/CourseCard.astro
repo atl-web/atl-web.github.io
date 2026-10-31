@@ -1,0 +1,39 @@
+---
+import Icon from './Icon.astro';
+import { WEEKDAYS } from '../lib/format';
+
+interface Props {
+  name: string;
+  days: string[];
+  start: string;
+  end: string;
+  teachers: string[];
+  todayKey: string;
+}
+
+const { name, days, start, end, teachers, todayKey } = Astro.props;
+---
+
+<article class="course-card">
+  <h3 class="course-name">{name}</h3>
+  <ul class="days" role="list">
+    {days.map((day) => (
+      <li>
+        <span class={`pill ${day === todayKey ? 'pill--today' : ''}`}>
+          {WEEKDAYS[day]}
+          {day === todayKey && <span> · Hoy</span>}
+        </span>
+      </li>
+    ))}
+  </ul>
+  <p class="meta">
+    <Icon name="clock" size={18} />
+    <span>
+      {start} a {end} hs
+    </span>
+  </p>
+  <p class="meta">
+    <Icon name="student" size={18} />
+    <span>{teachers.join(' y ')}</span>
+  </p>
+</article>

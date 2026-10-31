@@ -1,0 +1,26 @@
+[
+  {
+    "id": "juveniles-mayores",
+    "name": "Juveniles y Mayores",
+    "days": ["lun", "mie", "vie"],
+    "start": "19:00",
+    "end": "20:30",
+    "teachers": ["Luis", "Ramiro"]
+  },
+  {
+    "id": "infantiles-mar-jue",
+    "name": "Infantiles",
+    "days": ["mar", "jue"],
+    "start": "18:00",
+    "end": "19:00",
+    "teachers": ["Madeleine"]
+  },
+  {
+    "id": "infantiles-lun-mie-vie",
+    "name": "Infantiles",
+    "days": ["lun", "mie", "vie"],
+    "start": "18:00",
+    "end": "19:00",
+    "teachers": ["Delfina"]
+  }
+]

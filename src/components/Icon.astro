@@ -1,0 +1,21 @@
+---
+import { icons, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  label?: string;
+}
+
+const { name, size = 20, label } = Astro.props;
+const decorative = !label;
+---
+
+<span
+  class="icon"
+  style={`--icon-size: ${size}px`}
+  role={decorative ? 'presentation' : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : label}
+  set:html={icons[name]}
+/>

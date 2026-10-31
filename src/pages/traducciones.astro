@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MaterialGrid from '../components/MaterialGrid.astro';
+import Icon from '../components/Icon.astro';
+import { getCollection } from 'astro:content';
+
+const materials = await getCollection('materials');
+const items = materials
+  .filter((entry) => entry.data.group === 'traducciones')
+  .map((entry) => entry.data);
+const sections = [...new Set(items.map((item) => item.section))];
+const groups = sections.map((section) => ({
+  section,
+  items: items.filter((item) => item.section === section),
+}));
+---
+
+<Layout
+  title="Traducciones y terminología · Taekwondo Huracán"
+  description="Traducciones y terminología del Taekwondo: partes del cuerpo, Gups y Danes.">
+  <section class="section" aria-labelledby="page-title">
+    <div class="wrap">
+      <p class="eyebrow">Material</p>
+      <h1 class="section-title" id="page-title">Traducciones</h1>
+      <p class="lede">
+        Terminología del Taekwondo: partes del cuerpo, Gups y Danes. Cada tarjeta abre el PDF.
+      </p>
+      <MaterialGrid groups={groups} labelTag="h2" titleTag="h3" />
+      <p class="cta-row">
+        <a class="btn btn--ghost" href="/">
+          <Icon name="caret-left" size={18} />
+          Volver al inicio
+        </a>
+        <a class="btn btn--ghost" href="/apuntes">
+          Ver exámenes
+          <Icon name="caret-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "alvarez-luis",
+    "name": "Alvarez Luis",
+    "rank": "Maestro, 7º DAN",
+    "photo": "/assets/web/teachers/luis.webp",
+    "isHead": true,
+    "w": 320,
+    "h": 427
+  },
+  {
+    "id": "rodriguez-colmeiro-ramiro",
+    "name": "Rodríguez Colmeiro Ramiro",
+    "rank": "Sabonim, 4º DAN",
+    "photo": "/assets/web/teachers/ramiro.webp",
+    "isHead": false,
+    "w": 320,
+    "h": 427
+  },
+  {
+    "id": "espinoza-madeleine",
+    "name": "Espinoza Madeleine",
+    "rank": "Sabón, 2º DAN",
+    "photo": "/assets/web/teachers/made.webp",
+    "isHead": false,
+    "w": 320,
+    "h": 427
+  },
+  {
+    "id": "jara-delfina",
+    "name": "Jara Delfina",
+    "rank": "Sabón, 1º DAN",
+    "photo": "/assets/web/teachers/delfi.webp",
+    "isHead": false,
+    "w": 320,
+    "h": 427
+  }
+]

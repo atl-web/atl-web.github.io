@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import '@fontsource/bebas-neue/400.css';
+import '@fontsource/source-sans-3/400.css';
+import '@fontsource/source-sans-3/600.css';
+import '@fontsource/source-sans-3/700.css';
+import bebas400 from '@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2';
+import sans400 from '@fontsource/source-sans-3/files/source-sans-3-latin-400-normal.woff2';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  stamp?: string;
+}
+
+const { title, description, stamp } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#dc2626" />
+    <link rel="icon" href="/assets/logos/CAH.png" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={bebas400} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={sans400} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={new URL('/assets/logos/CAH.png', Astro.site)} />
+    <meta property="og:locale" content="es_AR" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer stamp={stamp} />
+  </body>
+</html>

@@ -1,0 +1,19 @@
+---
+import { CALENDAR_EMBED_URL } from '../lib/calendar';
+import Icon from './Icon.astro';
+---
+
+<div class="embed">
+  <iframe
+    class="embed-frame"
+    src={CALENDAR_EMBED_URL}
+    title="Calendario de eventos de Taekwondo Huracán"
+    loading="lazy"
+  ></iframe>
+  <p class="meta embed-note">
+    <Icon name="calendar" size={18} />
+    <a href={CALENDAR_EMBED_URL} rel="noopener noreferrer" target="_blank">
+      Abrir el calendario en Google Calendar
+    </a>
+  </p>
+</div>
