@@ -8,25 +8,21 @@ import MaterialGrid from '../components/MaterialGrid.astro';
 import Icon from '../components/Icon.astro';
 import { getEvents } from '../lib/calendar';
 import { todayDayKey } from '../lib/format';
+import { materialGroups } from '../lib/material';
 import { getCollection } from 'astro:content';
 
 const events = await getEvents();
-const teachers = await getCollection('teachers');
+const allTeachers = await getCollection('teachers');
 const courses = await getCollection('courses');
 const materials = await getCollection('materials');
 const todayKey = todayDayKey();
 
-function groupsFor(group: string, limit?: number) {
-  const items = materials
-    .filter((entry) => entry.data.group === group)
-    .slice(0, limit)
-    .map((entry) => entry.data);
-  const sections = [...new Set(items.map((item) => item.section))];
-  return sections.map((section) => ({
-    section,
-    items: items.filter((item) => item.section === section),
-  }));
+function danNumber(rank: string): number {
+  const match = rank.match(/(\d+)\s*º?\s*DAN/);
+  return match ? parseInt(match[1], 10) : 0;
 }
+
+const teachers = [...allTeachers].sort((a, b) => danNumber(b.data.rank) - danNumber(a.data.rank));
 ---
 
 <Layout
@@ -49,7 +45,7 @@ function groupsFor(group: string, limit?: number) {
           </p>
           <p class="meta">
             <Icon name="users" size={20} />
-            <span>Equipo: Alvarez Luis (7º DAN), Rodríguez Colmeiro Ramiro (4º DAN), Espinoza Madeleine (2º DAN), Jara Delfina (1º DAN)</span>
+            <span>Equipo: Alvarez Luis (7º DAN), Rodríguez Colmeiro Ramiro (5º DAN), Espinoza Madeleine (2º DAN), Jara Delfina (1º DAN)</span>
           </p>
         </div>
         <p class="cta-row">
@@ -152,12 +148,13 @@ function groupsFor(group: string, limit?: number) {
       <p class="eyebrow">Material</p>
       <h2 class="section-title" id="material-title">Exámenes, formas y traducciones</h2>
       <p class="lede">
-        Programas de examen y apuntes, formas (poomsae) y traducciones.
+        Programas de examen y apuntes (primero los gups y luego los Dan), formas (empezando por los
+        Taegeuk) y traducciones (primero gups, luego Dan).
       </p>
 
       <div class="material-block">
         <h3 class="sub-title">Exámenes: programas y apuntes</h3>
-        <MaterialGrid groups={groupsFor('examenes', 3)} />
+        <MaterialGrid groups={materialGroups(materials, 'examenes', 3)} />
         <p>
           <a class="btn btn--primary" href="/apuntes">
             <Icon name="file-text" size={18} />
@@ -168,7 +165,7 @@ function groupsFor(group: string, limit?: number) {
 
       <div class="material-block">
         <h3 class="sub-title">Formas</h3>
-        <MaterialGrid groups={groupsFor('formas', 3)} />
+        <MaterialGrid groups={materialGroups(materials, 'formas', 3)} />
         <p>
           <a class="btn btn--primary" href="/formas">
             <Icon name="target" size={18} />
@@ -179,7 +176,7 @@ function groupsFor(group: string, limit?: number) {
 
       <div class="material-block">
         <h3 class="sub-title">Traducciones</h3>
-        <MaterialGrid groups={groupsFor('traducciones', 3)} />
+        <MaterialGrid groups={materialGroups(materials, 'traducciones', 3)} />
         <p>
           <a class="btn btn--primary" href="/traducciones">
             <Icon name="book-open" size={18} />

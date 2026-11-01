@@ -3,16 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import MaterialGrid from '../components/MaterialGrid.astro';
 import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
+import { materialGroups } from '../lib/material';
 
 const materials = await getCollection('materials');
-const items = materials
-  .filter((entry) => entry.data.group === 'traducciones')
-  .map((entry) => entry.data);
-const sections = [...new Set(items.map((item) => item.section))];
-const groups = sections.map((section) => ({
-  section,
-  items: items.filter((item) => item.section === section),
-}));
+const groups = materialGroups(materials, 'traducciones');
 ---
 
 <Layout
@@ -23,7 +17,7 @@ const groups = sections.map((section) => ({
       <p class="eyebrow">Material</p>
       <h1 class="section-title" id="page-title">Traducciones</h1>
       <p class="lede">
-        Terminología del Taekwondo: partes del cuerpo, Gups y Danes. Cada tarjeta abre el PDF.
+        Terminología del Taekwondo: partes del cuerpo, traducciones de Gups y Danes.
       </p>
       <MaterialGrid groups={groups} labelTag="h2" titleTag="h3" />
       <p class="cta-row">

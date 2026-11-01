@@ -3,14 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import MaterialGrid from '../components/MaterialGrid.astro';
 import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
+import { materialGroups } from '../lib/material';
 
 const materials = await getCollection('materials');
-const items = materials.filter((entry) => entry.data.group === 'formas').map((entry) => entry.data);
-const sections = [...new Set(items.map((item) => item.section))];
-const groups = sections.map((section) => ({
-  section,
-  items: items.filter((item) => item.section === section),
-}));
+const groups = materialGroups(materials, 'formas');
 ---
 
 <Layout
